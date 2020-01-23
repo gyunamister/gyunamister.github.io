@@ -123,12 +123,17 @@
   </url>
   
   <url>
-    <loc>https://gyunamister.github.io/authors/admin/</loc>
+    <loc>https://gyunamister.github.io/tags/icpm2019/</loc>
+    <lastmod>2019-06-26T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://gyunamister.github.io/publication/icpm-2019/</loc>
-    <priority>0</priority>
+    <lastmod>2019-06-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/authors/admin/</loc>
   </url>
   
   <url>

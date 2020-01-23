@@ -3,23 +3,56 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://gyunamister.github.io/authors/admin/</loc>
-  </url>
-  
-  <url>
     <loc>https://gyunamister.github.io/authors/</loc>
+    <lastmod>2020-01-23T19:57:39+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://gyunamister.github.io/categories/</loc>
+    <loc>https://gyunamister.github.io/tags/bigdata/</loc>
+    <lastmod>2020-01-23T19:57:39+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://gyunamister.github.io/</loc>
+    <lastmod>2020-01-23T19:57:39+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/authors/gyunam-park/</loc>
+    <lastmod>2020-01-23T19:57:39+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/tags/hadoop/</loc>
+    <lastmod>2020-01-23T19:57:39+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/tags/installation/</loc>
+    <lastmod>2020-01-23T19:57:39+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://gyunamister.github.io/post/</loc>
+    <lastmod>2020-01-23T19:57:39+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/tags/</loc>
+    <lastmod>2020-01-23T19:57:39+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/post/hadoop-installation/</loc>
+    <lastmod>2020-01-23T19:57:39+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/authors/admin/</loc>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/categories/</loc>
   </url>
   
   <url>
@@ -32,10 +65,6 @@
   
   <url>
     <loc>https://gyunamister.github.io/talk/</loc>
-  </url>
-  
-  <url>
-    <loc>https://gyunamister.github.io/tags/</loc>
   </url>
   
 </urlset>

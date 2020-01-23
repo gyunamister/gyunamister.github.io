@@ -6,9 +6,37 @@
     <description>Recent content in Tags on Gyunam</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
+    <lastBuildDate>Thu, 23 Jan 2020 19:57:39 +0100</lastBuildDate>
     
 	    <atom:link href="https://gyunamister.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>BigData</title>
+      <link>https://gyunamister.github.io/tags/bigdata/</link>
+      <pubDate>Thu, 23 Jan 2020 19:57:39 +0100</pubDate>
+      
+      <guid>https://gyunamister.github.io/tags/bigdata/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hadoop</title>
+      <link>https://gyunamister.github.io/tags/hadoop/</link>
+      <pubDate>Thu, 23 Jan 2020 19:57:39 +0100</pubDate>
+      
+      <guid>https://gyunamister.github.io/tags/hadoop/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Installation</title>
+      <link>https://gyunamister.github.io/tags/installation/</link>
+      <pubDate>Thu, 23 Jan 2020 19:57:39 +0100</pubDate>
+      
+      <guid>https://gyunamister.github.io/tags/installation/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

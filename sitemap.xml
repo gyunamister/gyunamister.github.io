@@ -3,17 +3,57 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://gyunamister.github.io/publication_types/1/</loc>
+    <lastmod>2020-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/publication/wi-2020/</loc>
+    <lastmod>2020-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/</loc>
+    <lastmod>2020-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/tags/paper/</loc>
+    <lastmod>2020-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/publication_types/</loc>
+    <lastmod>2020-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/publication/</loc>
+    <lastmod>2020-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/tags/recommendation/</loc>
+    <lastmod>2020-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/tags/</loc>
+    <lastmod>2020-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/tags/wi2020/</loc>
+    <lastmod>2020-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://gyunamister.github.io/authors/</loc>
     <lastmod>2020-01-23T20:03:27+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://gyunamister.github.io/tags/bigdata/</loc>
-    <lastmod>2020-01-23T20:03:27+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://gyunamister.github.io/</loc>
     <lastmod>2020-01-23T20:03:27+01:00</lastmod>
   </url>
   
@@ -38,11 +78,6 @@
   </url>
   
   <url>
-    <loc>https://gyunamister.github.io/tags/</loc>
-    <lastmod>2020-01-23T20:03:27+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://gyunamister.github.io/post/hadoop-installation-mac-linux/</loc>
     <lastmod>2020-01-23T20:03:27+01:00</lastmod>
   </url>
@@ -53,7 +88,7 @@
   </url>
   
   <url>
-    <loc>https://gyunamister.github.io/publication_types/3/</loc>
+    <loc>https://gyunamister.github.io/publication_types/2/</loc>
     <lastmod>2020-01-02T00:00:00+00:00</lastmod>
   </url>
   
@@ -68,11 +103,6 @@
   </url>
   
   <url>
-    <loc>https://gyunamister.github.io/tags/paper/</loc>
-    <lastmod>2020-01-02T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://gyunamister.github.io/publication/dss-2020/</loc>
     <lastmod>2020-01-02T00:00:00+00:00</lastmod>
   </url>
@@ -83,17 +113,22 @@
   </url>
   
   <url>
-    <loc>https://gyunamister.github.io/publication_types/</loc>
-    <lastmod>2020-01-02T00:00:00+00:00</lastmod>
+    <loc>https://gyunamister.github.io/publication_types/3/</loc>
+    <lastmod>2019-10-11T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://gyunamister.github.io/publication/</loc>
-    <lastmod>2020-01-02T00:00:00+00:00</lastmod>
+    <loc>https://gyunamister.github.io/publication/icpm-extended-2019/</loc>
+    <lastmod>2019-10-11T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://gyunamister.github.io/authors/admin/</loc>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/publication/icpm-2019/</loc>
+    <priority>0</priority>
   </url>
   
   <url>

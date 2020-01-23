@@ -6,10 +6,37 @@
     <description>Recent content in Tags on Gyunam</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Jan 2020 20:03:27 +0100</lastBuildDate>
+    <lastBuildDate>Sun, 01 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="https://gyunamister.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Paper</title>
+      <link>https://gyunamister.github.io/tags/paper/</link>
+      <pubDate>Sun, 01 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://gyunamister.github.io/tags/paper/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Recommendation</title>
+      <link>https://gyunamister.github.io/tags/recommendation/</link>
+      <pubDate>Sun, 01 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://gyunamister.github.io/tags/recommendation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WI2020</title>
+      <link>https://gyunamister.github.io/tags/wi2020/</link>
+      <pubDate>Sun, 01 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://gyunamister.github.io/tags/wi2020/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>BigData</title>
@@ -44,15 +71,6 @@
       <pubDate>Thu, 02 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>https://gyunamister.github.io/tags/dss/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Paper</title>
-      <link>https://gyunamister.github.io/tags/paper/</link>
-      <pubDate>Thu, 02 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://gyunamister.github.io/tags/paper/</guid>
       <description></description>
     </item>
     

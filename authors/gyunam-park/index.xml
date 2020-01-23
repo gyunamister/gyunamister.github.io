@@ -350,5 +350,14 @@ $ jps //to check if it works
       <description></description>
     </item>
     
+    <item>
+      <title>Prediction-based Resource Allocation using Bayesian Neural Networks and Minimum Cost and Maximum Flow Algorithm</title>
+      <link>https://gyunamister.github.io/publication/icpm-extended-2019/</link>
+      <pubDate>Fri, 11 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://gyunamister.github.io/publication/icpm-extended-2019/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

@@ -6,10 +6,19 @@
     <description>Recent content on Gyunam</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Jan 2020 20:03:27 +0100</lastBuildDate>
+    <lastBuildDate>Sun, 01 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="https://gyunamister.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Publications</title>
+      <link>https://gyunamister.github.io/publication/</link>
+      <pubDate>Sun, 01 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://gyunamister.github.io/publication/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Posts</title>
@@ -17,15 +26,6 @@
       <pubDate>Thu, 23 Jan 2020 20:03:27 +0100</pubDate>
       
       <guid>https://gyunamister.github.io/post/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Publications</title>
-      <link>https://gyunamister.github.io/publication/</link>
-      <pubDate>Thu, 02 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://gyunamister.github.io/publication/</guid>
       <description></description>
     </item>
     

@@ -18,6 +18,7 @@
       
       <guid>https://gyunamister.github.io/post/hadoop-installation-mac-linux/</guid>
       <description>&lt;h1 id=&#34;the-easiest-hadoop-installation---macoslinux&#34;&gt;The (easiest) Hadoop installation - MacOS/Linux&lt;/h1&gt;
+&lt;p&gt;&lt;em&gt;(Last updated: 24. Jan. 2020 14:00)&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;This blog post is a supplement for Hadoop instruction at &lt;em&gt;Introduction to Data Science, RWTH-Aachen&lt;/em&gt;. The goal is to make sure that everyone can run Hadoop at his/her PC. Thus, I aim for explaining how to install Hadoop in the easiest manner by taking the simplest approach. This is not a succint way to install Hadoop (If you think you are quite familar with how (system-related) things work, I recommend you to find other blog posts).&lt;/p&gt;
 &lt;p&gt;Let&#39;s get started.&lt;/p&gt;
 &lt;h3 id=&#34;1-install-java&#34;&gt;1. Install Java&lt;/h3&gt;
@@ -53,18 +54,29 @@ echo $HADOOP_HOME //YOU MUST SEE /usr/local/Cellar/hadoop-2.8.4 on your terminal
 &lt;p&gt;Replace a block&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;p&gt;​	&amp;hellip;&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+
+...
+
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;into&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;yarn.nodemanager.aux-services&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;mapreduce_shuffle&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.nodemanager.auxservices.mapreduce.shuffle.class&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;org.apache.hadoop.mapred.ShuffleHandler&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -79,18 +91,29 @@ echo $HADOOP_HOME //YOU MUST SEE /usr/local/Cellar/hadoop-2.8.4 on your terminal
 &lt;p&gt;Replace a block&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;p&gt;​	&amp;hellip;&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+
+...
+
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;into&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hadoop.tmp.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;/usr/local/Cellar/hadoop/hdfs/tmp&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;hdfs://localhost:9000&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -105,18 +128,41 @@ echo $HADOOP_HOME //YOU MUST SEE /usr/local/Cellar/hadoop-2.8.4 on your terminal
 &lt;p&gt;Replace a block&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;p&gt;​	&amp;hellip;&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+
+...
+
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;into&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.replication&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;2&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.permissions&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;false&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.namenode.name.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;/usr/local/Cellar/hadoop-2.8.4/data/dfs/namenode&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.namenode.checkpoint.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;/usr/local/Cellar/hadoop-2.8.4/data/dfs/namesecondary&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.datanode.data.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;/usr/local/Cellar/hadoop-2.8.4/data/dfs/datanode&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -131,17 +177,30 @@ echo $HADOOP_HOME //YOU MUST SEE /usr/local/Cellar/hadoop-2.8.4 on your terminal
 &lt;p&gt;Replace a block&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;p&gt;​	&amp;hellip;&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+
+...
+
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;into&lt;/p&gt;
-&lt;/li&gt;
+&lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;mapred.job.tracker&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;localhost:9010&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
@@ -187,6 +246,7 @@ $ jps //to check if it works
       
       <guid>https://gyunamister.github.io/post/hadoop-installation/</guid>
       <description>&lt;h1 id=&#34;the-easiest-hadoop-installation---windows&#34;&gt;The (easiest) Hadoop installation - Windows&lt;/h1&gt;
+&lt;p&gt;&lt;em&gt;(Last updated: 24. Jan. 2020 14:00)&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;This blog post is a supplement for Hadoop instruction at &lt;em&gt;Introduction to Data Science, RWTH-Aachen&lt;/em&gt;. The goal is to make sure that everyone can run Hadoop at his/her PC. Thus, I aim for explaining how to install Hadoop in the easiest manner by taking the simplest approach. This is not a succint way to install Hadoop (If you think you are quite familar with how (system-related) things work, I recommend you to find other blog posts).&lt;/p&gt;
 &lt;p&gt;Let&#39;s get started.&lt;/p&gt;
 &lt;h3 id=&#34;1-install-java&#34;&gt;1. Install Java&lt;/h3&gt;
@@ -220,18 +280,29 @@ $ mklink /j C:\tools\java &amp;quot;YOUR_JDK_DIRECTORY&amp;quot;
 &lt;p&gt;Replace a block&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;p&gt;​	&amp;hellip;&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+
+...
+
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;into&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;yarn.nodemanager.aux-services&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;mapreduce_shuffle&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+    &amp;lt;name&amp;gt;yarn.nodemanager.auxservices.mapreduce.shuffle.class&amp;lt;/name&amp;gt;
+    &amp;lt;value&amp;gt;org.apache.hadoop.mapred.ShuffleHandler&amp;lt;/value&amp;gt;
+  &amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -246,18 +317,29 @@ $ mklink /j C:\tools\java &amp;quot;YOUR_JDK_DIRECTORY&amp;quot;
 &lt;p&gt;Replace a block&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;p&gt;​	&amp;hellip;&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+
+...
+
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;into&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;hadoop.tmp.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;\C:\hadoop-2.8.4\data\tmp&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;hdfs://localhost:9000&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -272,18 +354,41 @@ $ mklink /j C:\tools\java &amp;quot;YOUR_JDK_DIRECTORY&amp;quot;
 &lt;p&gt;Replace a block&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;p&gt;​	&amp;hellip;&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+
+...
+
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;into&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.replication&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;2&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.permissions&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;false&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.namenode.name.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;\C:/hadoop-2.8.4\data\dfs\namenode&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.namenode.checkpoint.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;\C:/hadoop-2.8.4\data\dfs\namesecondary&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;dfs.datanode.data.dir&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;\C:/hadoop-2.8.4\data\dfs\datanode&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -298,17 +403,30 @@ $ mklink /j C:\tools\java &amp;quot;YOUR_JDK_DIRECTORY&amp;quot;
 &lt;p&gt;Replace a block&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;p&gt;​	&amp;hellip;&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;/li&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+
+...
+
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;into&lt;/p&gt;
-&lt;/li&gt;
+&lt;ul&gt;
 &lt;li&gt;
-&lt;!-- raw HTML omitted --&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;configuration&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;mapred.job.tracker&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;localhost:9010&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;property&amp;gt;
+  &amp;lt;name&amp;gt;mapreduce.framework.name&amp;lt;/name&amp;gt;
+  &amp;lt;value&amp;gt;yarn&amp;lt;/value&amp;gt;
+&amp;lt;/property&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;

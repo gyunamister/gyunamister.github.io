@@ -6,10 +6,543 @@
     <description>Recent content in Posts on Gyunam</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Jan 2020 20:03:27 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 31 Jan 2020 07:55:14 +0100</lastBuildDate>
     
 	    <atom:link href="https://gyunamister.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Hadoop Hands-On (Process Mining with Hadoop)</title>
+      <link>https://gyunamister.github.io/post/hadoop-hands-on/</link>
+      <pubDate>Fri, 31 Jan 2020 07:55:14 +0100</pubDate>
+      
+      <guid>https://gyunamister.github.io/post/hadoop-hands-on/</guid>
+      <description>&lt;h1 id=&#34;hadoop-hands-on-process-mining-with-hadoop&#34;&gt;Hadoop Hands-On (Process Mining with Hadoop)&lt;/h1&gt;
+&lt;p&gt;&lt;em&gt;(Last updated: 31. January. 2020)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;This blog post is a supplement for Hadoop instruction at &lt;em&gt;Introduction to Data Science, RWTH-Aachen&lt;/em&gt;. This post covers:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;What is Hadoop Distributed File System (HDFS)? How can we use it?&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Hadoop MapReduce? How can we use it?&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How can we apply process mining techniques to an event log with billions of events with Hadoop?&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We are living in the world of &lt;strong&gt;big data&lt;/strong&gt;. Data is being generated at all the places we can imagine. If you look outside the window, people waiting for the bus generate huge amount of logs while surfing websites and watching Youtube clips. The houses also produce lots of data from sensors attached to electrical machines, even including bulbs. This enables companies to develop services (e.g., personalized recommendation) which benifits their customers (like us) a lot.&lt;/p&gt;
+&lt;p&gt;If you think of how the companies give those advantages to us, it is not coming for free. Companies are struggling to manage the data as efficient as possible. Building big data infrastructure is one of those efforts. How do they exploit big data infrastructure to manage the big data efficiently? There are three most important trends in constructing big data infrastructure&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Distribution&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;More data in memory&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Streaming&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In this post, I am going to deal with &lt;em&gt;&lt;strong&gt;distribution&lt;/strong&gt;&lt;/em&gt; part.&lt;/p&gt;
+&lt;p&gt;If we have a super computer which is capable of handling big data with fast computation and reliable fault tolerance, we don&#39;t really have to worry much about distributing the storage and computation into different machines. However, most of the time, it is not the case. Then, what can we do? The answer is distribution.&lt;/p&gt;
+&lt;p&gt;The motivation is that we store the massive volume of data into multiple cheap commodities and parallelize computation across CPUs of the commodities. With this simple idea, we are able to store and analyze big data. Then, how can we achieve it? The answer is Hadoop.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(&lt;a href=&#34;https://en.wikipedia.org/wiki/Apache_Hadoop&#34;&gt;Wikipedia&lt;/a&gt;) Hadoop is a collection of open-source software utilities that facilitate using a network of many computers to solve problems involving massive amounts of data and computation. It provides a software framework for distributed storage and processing of big data using the MapReduce programming model.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The first phase of hadoop was composed of Hadoop Distributed File System (HDFS), which is used for storing data, and MapReduce programming model, which is used for distributing computation. The second phase of hadoop was more elaborated by separating the resource management functionality of previous MapReduce into Yarn and introducing more specialized applications like Hive, which is used for making queries. In the third phase, it becomes much more elaborated, and there are hundreds of applications available in the context of Hadoop framework, which are used for machine learning, streaming data analysis, cloud environment, etc.&lt;/p&gt;
+
+
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;hadoop-history.png&#34; &gt;
+
+&lt;img src=&#34;hadoop-history.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Hadoop History&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+&lt;p&gt;The best way to understand how Hadoop works is to learn about &lt;strong&gt;HDFS and MapReduce&lt;/strong&gt;, which are basic building blocks for various other applications.&lt;/p&gt;
+&lt;h3 id=&#34;1-hdfs&#34;&gt;1. HDFS&lt;/h3&gt;
+&lt;p&gt;If you upload a file into DFS, it is split into data blocks, and each of them is stored into different nodes. For the purpose of fault tolerance, you can make copies of those blocks and store them into different nodes. Let&#39;s say you have two files, &lt;em&gt;file1.txt and file2.txt&lt;/em&gt;. They are divided into three and two blocks, respectively. Each block is copied three times, and stored into data nodes. For example, &lt;em&gt;file1.txt&lt;/em&gt; is splited into three blocks, and the three copies of block &lt;em&gt;A&lt;/em&gt; are stored at data node #1, #2, and #4. It gurantees fault tolerance, i.e., even though data node #1 fails, there are data node #2 and #4, which are still running.&lt;/p&gt;
+
+
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;hdfs-example.png&#34; &gt;
+
+&lt;img src=&#34;hdfs-example.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;HDFS example&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+&lt;p&gt;So, how can we upload data into HDFS? Let&#39;s have a look at some basic commands for HDFS.&lt;/p&gt;
+&lt;h4 id=&#34;11-preparation&#34;&gt;1.1. Preparation&lt;/h4&gt;
+&lt;p&gt;For windows, open your CMD (or Anaconda prompt) with administrator role, and type below:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hadoop dfsadmin -safemode leave
+$ start-all
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;For Mac/Linux,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ start-all.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;12-commands&#34;&gt;&lt;strong&gt;1.2. Commands&lt;/strong&gt;&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Cat: Displaying the contents of the filename on console or stdout&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hadoop fs -cat /file1
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;CopyFromLocal/CopyToLocal: uploading/downloding file from/to local&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hadoop fs –copyFromLocal file:///file1  /folder1
+$ hadoop fs –copyFromLocal file:///folder1  /folder2
+$ hadoop fs –copyFromLocal file:///file1  /folder1/file2
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;cp: relocating files in HDFS&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hadoop fs –cp /file1  /folder1
+$ hadoop fs –cp /file1  /file2  /folder1
+$ hadoop fs –cp /folder1  /folder2
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ls: listing the files in the current directory&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hadoop fs –ls /folder1
+$ hadoop fs –ls /file1
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;mkdir: making directory&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hadoop fs –mkdir /folder1
+$ hadoop fs –mkdir –p /folder1/folder2/folder3
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;rm: removing file&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hadoop fs –rm -r /folder1
+$ hadoop fs –rm /file1
+$ hadoop fs –rm  –r /folder1
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;13-excercises&#34;&gt;&lt;strong&gt;1.3. Excercises&lt;/strong&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Build the folders /test/input in your HDFS&lt;/li&gt;
+&lt;li&gt;Build the folders /test/output in your HDFS&lt;/li&gt;
+&lt;li&gt;Copy the local file PriceSum1.txt into folder /test/input&lt;/li&gt;
+&lt;li&gt;Show the contents of PriceSum1.txt in your terminal&lt;/li&gt;
+&lt;li&gt;Delete the file /test/input/PriceSum1.txt&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-mapreduce&#34;&gt;2. MapReduce&lt;/h3&gt;
+&lt;p&gt;We uploaded our files into HDFS, and they are splited into some blocks, copied, and stored into data nodes.  So, what&#39;s next? It is time to do some actual computations using MapReduce Programming model. Let&#39;s do word counting with Hadoop.&lt;/p&gt;
+&lt;h4 id=&#34;21-concept&#34;&gt;2.1. Concept&lt;/h4&gt;
+&lt;p&gt;Suppose we have a file, &lt;em&gt;WordCount1.txt&lt;/em&gt;, which contains the following sentences:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the quick brown fox&lt;/li&gt;
+&lt;li&gt;the fox ate the mouse&lt;/li&gt;
+&lt;li&gt;how now brown cow&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Assume that this file is split into three blocks, each of which contains one sentence. How can we count the frequency of words in this file? Now, it&#39;s time for MapReduce (MR).&lt;/p&gt;
+&lt;p&gt;MR consists of three functions, &lt;em&gt;map&lt;/em&gt;, &lt;em&gt;suffle&lt;/em&gt;, and &lt;em&gt;reduce&lt;/em&gt;. Map function $map \in K_1 \times V_1 \to (K_2 \times V_2)^*$ maps tuples into sets of tuples.&lt;/p&gt;
+
+
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;map-example.png&#34; &gt;
+
+&lt;img src=&#34;map-example.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Map example&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+&lt;p&gt;For example, the block 1 (i.e., sentence 1), $(block_1, the ; quick ; brown ; fox)$ is mapped into ${ (the,1),(brown,1),(fox,1),(quick,1) }$. The block 2 (i.e., sentence 2), $(block_2,the ; fox ; the ; ate ; mouse)$, is mapped into ${ (the,1),(fox,1),(the,1),(ate,1),(mouse,1) }$.&lt;/p&gt;
+&lt;p&gt;Suffle function $suffle \in (K_2 \times V_2)^* \to K_2 \times (V_2)^*$ maps sets of tuples into tuples of a key and a set.&lt;/p&gt;
+
+
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;shuffle-example.png&#34; &gt;
+
+&lt;img src=&#34;shuffle-example.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Shuffle example&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+&lt;p&gt;For example, $(brown,1)$ from block 1 and $(brown,1) $ from block 2 are mapped into $(brown,[1,1])$.&lt;/p&gt;
+&lt;p&gt;Reduce function $reduce \in K_2 \times (V_2)^* \to (K_3 \times V_3)^*$ maps tuples of a key and a set to sets of tuples.&lt;/p&gt;
+
+
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;reduce-example.png&#34; &gt;
+
+&lt;img src=&#34;reduce-example.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Reduce example&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+&lt;h4 id=&#34;22-excercise&#34;&gt;2.2. Excercise&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;For the input document, calculate the total price for each invoice ID. Presume you use MapReduce to do this, please write down the output of each Map function, the output after shuffle, and the output of Reduce function.&lt;/p&gt;
+
+
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;pricesum-input.png&#34; &gt;
+
+&lt;img src=&#34;pricesum-input.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Input for Price Sum&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-mapreduce-programming-with-python&#34;&gt;3. MapReduce Programming with Python&lt;/h3&gt;
+&lt;p&gt;So far, we have learned what MapReduce is and how it works. Now, let our Hadoop framework do what we did by hand. Let&#39;s first recap what&#39;s done by hand. Given an input, we applied map function, shuffle function, and reduce function. Then, what do we need to do for Hadoop to do it instead of us?&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;First, upload file into HDFS (Give input)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write Map function (in Python)&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Shuffling is done by Hadoop)&lt;/em&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write Reduce function (in Python)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Write Command&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;31-uploading-file-into-hdfs&#34;&gt;3.1. Uploading file into HDFS.&lt;/h4&gt;
+&lt;p&gt;Also, see 1.2.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hadoop fs -copyFromLocal ./WordCount1.txt /test/input
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;32-write-map-function&#34;&gt;3.2. Write Map function&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; sys
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# input comes from STDIN&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; sentence &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;stdin:
+    &lt;span style=&#34;color:#75715e&#34;&gt;# remove whitespace&lt;/span&gt;
+    sentence &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sentence&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()
+    &lt;span style=&#34;color:#75715e&#34;&gt;# split the sentence into words&lt;/span&gt;
+    words &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; sentence&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split()
+    &lt;span style=&#34;color:#75715e&#34;&gt;# increase counters&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; word &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; words:
+        &lt;span style=&#34;color:#75715e&#34;&gt;# write the results to STDOUT;&lt;/span&gt;
+        &lt;span style=&#34;color:#75715e&#34;&gt;# key: word, value: 1 (count of the word)&lt;/span&gt;
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (word, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;33-write-reduce-function&#34;&gt;3.3. Write Reduce function&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; operator &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; itemgetter
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; sys
+
+current_word &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; None
+current_count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+word &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; None
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# input comes from STDIN&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; kv_pair &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;stdin:
+    &lt;span style=&#34;color:#75715e&#34;&gt;# remove whitespace&lt;/span&gt;
+    kv_pair &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; kv_pair&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()
+    &lt;span style=&#34;color:#75715e&#34;&gt;# parse the input (word,count) we got from mapper.py&lt;/span&gt;
+    word, count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; kv_pair&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+    &lt;span style=&#34;color:#75715e&#34;&gt;# convert count (currently a string) to int&lt;/span&gt;
+    count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; int(count)
+    &lt;span style=&#34;color:#75715e&#34;&gt;# shuflling is done by Hadoop&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; current_word&lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt;word:
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; current_word:
+            &lt;span style=&#34;color:#75715e&#34;&gt;# write result to STDOUT&lt;/span&gt;
+            &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (current_word, current_count))
+        current_word &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; word
+        current_count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; count
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;:
+        current_count &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; count
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# output the last word&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; current_word &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; word:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (current_word, current_count))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;34-command&#34;&gt;3.4. Command&lt;/h4&gt;
+&lt;p&gt;For Windows:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ hadoop jar C:\hadoop-2.8.4\share\hadoop\tools\lib\hadoop-streaming-2.8.4.jar -input hdfs:///test/input/WordCount1.txt -output hdfs:///test/output/WordCountOutput0 -mapper &amp;quot;python C:\Users\park\Desktop\bigdata\new_instruction\word_mapper.py&amp;quot; -reducer &amp;quot;python C:\Users\park\Desktop\bigdata\new_instruction\word_reducer.py&amp;quot; -file C:\Users\park\Desktop\bigdata\new_instruction\word_mapper.py -file C:\Users\park\Desktop\bigdata\new_instruction\word_reducer.py
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;For Mac&amp;amp;Linux:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;hadoop jar /usr/local/Cellar/hadoop-2.8.4/share/hadoop/tools/lib/hadoop-streaming-2.8.4.jar \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/word_mapper.py \
+-mapper &amp;quot;python word_mapper.py&amp;quot; \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/word_reducer.py \
+-reducer &amp;quot;python word_reducer.py&amp;quot; \
+-input /test/input/WordCount1.txt \
+-output /test/output/WordCountOutput
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;35-excercise&#34;&gt;3.5. Excercise&lt;/h4&gt;
+&lt;p&gt;Write down the Python code of mapper and reducer to solve the problem from exercise 1: calculate the total price for each invoice id for a given document with the same format as shown in exercise 1. Run your code over the file PriceSum1.txt stored in HDFS&lt;/p&gt;
+&lt;h3 id=&#34;4-process-mining-with-hadoop&#34;&gt;4. Process Mining with Hadoop&lt;/h3&gt;
+&lt;p&gt;Let&#39;s say we have an event log with billions of events. How can we discover process model from this event log?&lt;/p&gt;
+&lt;p&gt;The answer is to use Hadoop framework. We can distribute the event log into multiple data nodes, and apply MapReduce programming model to compute directly follows relations (i.e., how many times activity x is followed by activity y). For this, we need to apply two MapReduce tasks. The first task is to generate traces from the event log by using MapReduce. The second is to discover directly follows relations (DFR) from the traces. Afterward, this direclty follows relations to discover a directly follows graph (DFG) and a workflow net.&lt;/p&gt;
+&lt;p&gt;Below is the overview of our approach&lt;/p&gt;
+
+
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;pm-overview.png&#34; &gt;
+
+&lt;img src=&#34;pm-overview.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Overview&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+&lt;h4 id=&#34;41-mapreduce-task-1&#34;&gt;4.1. MapReduce Task (1)&lt;/h4&gt;
+&lt;p&gt;Below is the description of how it works:&lt;/p&gt;
+
+
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;pm-task1.png&#34; &gt;
+
+&lt;img src=&#34;pm-task1.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Overview&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+&lt;h5 id=&#34;411-map-function&#34;&gt;4.1.1 Map function&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; sys
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# input comes from STDIN (standard input)&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; line &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;stdin:
+	&lt;span style=&#34;color:#75715e&#34;&gt;# remove whitespace and split row into values&lt;/span&gt;
+    line_split &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+    &lt;span style=&#34;color:#75715e&#34;&gt;# assign case, activity, timestamp&lt;/span&gt;
+    case &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line_split[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]
+    activity &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line_split[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]
+    timestamp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line_split[&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;]
+    &lt;span style=&#34;color:#75715e&#34;&gt;# write the results to STDOUT;&lt;/span&gt;
+    &lt;span style=&#34;color:#75715e&#34;&gt;# key: case, value: (timestamp,activity)&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (case, timestamp, activity))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;412-reduce-function&#34;&gt;4.1.2 Reduce function&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; sys
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; json
+
+current_case &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; None
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# input comes from STDIN&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; line &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;stdin:
+	&lt;span style=&#34;color:#75715e&#34;&gt;# remove whitespace and parse the input (case,(timestamp, activity)) we got from mapper.py&lt;/span&gt;
+	line_split &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+	caseid, timestamp, activity &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line_split[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;], line_split[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;], line_split[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;]
+	&lt;span style=&#34;color:#75715e&#34;&gt;# shuflling is done by Hadoop&lt;/span&gt;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; caseid &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; current_case:
+		&lt;span style=&#34;color:#75715e&#34;&gt;# write result to STDOUT&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; current_case:
+			&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (current_case,json&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dumps(current_trace)))
+		&lt;span style=&#34;color:#75715e&#34;&gt;# reset current trace&lt;/span&gt;
+		current_case &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; caseid
+		current_trace &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; list()
+		current_trace &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [activity]
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;:
+		current_trace &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [activity]
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# output the last word&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; current_case &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; caseid:
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (caseid,json&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dumps(current_trace)))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;42-mapreduce-task-2&#34;&gt;4.2. MapReduce Task (2)&lt;/h4&gt;
+&lt;p&gt;Below is the description of how it works:&lt;/p&gt;
+
+
+
+
+
+
+&lt;figure&gt;
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;pm-task2.png&#34; &gt;
+
+&lt;img src=&#34;pm-task2.png&#34; &gt;
+&lt;/a&gt;
+
+
+&lt;figcaption data-pre=&#34;Figure &#34; data-post=&#34;:&#34; &gt;
+  &lt;h4&gt;Overview&lt;/h4&gt;
+  
+&lt;/figcaption&gt;
+
+&lt;/figure&gt;
+
+&lt;h5 id=&#34;421-map-function&#34;&gt;4.2.1. Map function&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; sys
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; json
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# input comes from STDIN&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; line &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;stdin:
+	&lt;span style=&#34;color:#75715e&#34;&gt;# remove whitespace and split row into values&lt;/span&gt;
+	line_split &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+	&lt;span style=&#34;color:#75715e&#34;&gt;# load trace into list of activities&lt;/span&gt;
+	activities &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; json&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;loads(line_split[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;])
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; range(len(activities)&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;):
+		&lt;span style=&#34;color:#75715e&#34;&gt;# write the results to STDOUT;&lt;/span&gt;
+    	&lt;span style=&#34;color:#75715e&#34;&gt;# key: (from,to), value: 1 (count of the relation)&lt;/span&gt;
+		stru &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; activities[i] &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;,&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; activities[i &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (stru, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;422-reduce-function&#34;&gt;4.2.2. Reduce function&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;reducer.py&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; operator &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; itemgetter
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; sys
+
+current_relation &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; None
+current_count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+relation &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; None
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# input comes from STDIN&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; line &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;stdin:
+    &lt;span style=&#34;color:#75715e&#34;&gt;# remove whitespace&lt;/span&gt;
+    line &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()
+    &lt;span style=&#34;color:#75715e&#34;&gt;# parse the input ((from,to),count) we got from mapper.py&lt;/span&gt;
+    relation, count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+    &lt;span style=&#34;color:#75715e&#34;&gt;# convert count (currently a string) to int&lt;/span&gt;
+    count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; int(count)
+    &lt;span style=&#34;color:#75715e&#34;&gt;# shuflling is done by Hadoop&lt;/span&gt;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; current_relation&lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt;relation:
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; current_relation:
+            &lt;span style=&#34;color:#75715e&#34;&gt;# write result to STDOUT&lt;/span&gt;
+            &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (current_relation, current_count))
+        current_relation &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; relation
+        current_count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; count
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;:
+        current_count &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; count
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# output the last relation&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; current_relation &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; relation:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (current_relation, current_count))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;43-command&#34;&gt;4.3. Command&lt;/h4&gt;
+&lt;h5 id=&#34;431-mapreduce-task-1&#34;&gt;4.3.1. MapReduce Task (1)&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;#For Windows users
+!hadoop jar C:\hadoop-2.8.4\share\hadoop\tools\lib\hadoop-streaming-2.8.4.jar -file C:\hadoop-handson\pm_mapper1.py -mapper &amp;quot;python C:\hadoop-handson\pm_mapper1.py&amp;quot; -file C:\hadoop-handson\pm_reducer1.py -reducer &amp;quot;python C:\hadoop-handson\pm_reducer1.py&amp;quot; -input hdfs:///test/input/running-example.tsv -output hdfs:///test/output/DFG0
+
+#For Mac/Linux users
+!hadoop jar /usr/local/Cellar/hadoop-2.8.4/share/hadoop/tools/lib/hadoop-streaming-2.8.4.jar \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/pm_mapper1.py \
+-mapper &amp;quot;python pm_mapper1.py&amp;quot; \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/pm_reducer1.py \
+-reducer &amp;quot;python pm_reducer1.py&amp;quot; \
+-input /test/input/running-example.tsv \
+-output /test/output/DFG0
+&lt;/code&gt;&lt;/pre&gt;&lt;h5 id=&#34;432-mapreduce-task-2&#34;&gt;4.3.2. MapReduce Task (2)&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;#For Windows users
+!hadoop jar C:\hadoop-2.8.4\share\hadoop\tools\lib\hadoop-streaming-2.8.4.jar -file C:\hadoop-handson\pm_mapper2.py -mapper &amp;quot;python C:\hadoop-handson\pm_mapper2.py&amp;quot; -file C:\hadoop-handson\pm_reducer2.py -reducer &amp;quot;python C:\hadoop-handson\pm_reducer2.py&amp;quot; -input hdfs:///test/output/DFG0/part-00000 -output hdfs:///test/output/DFG0-final
+
+#For Mac/Linux users
+!hadoop jar /usr/local/Cellar/hadoop-2.8.4/share/hadoop/tools/lib/hadoop-streaming-2.8.4.jar \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/pm_mapper2.py \
+-mapper &amp;quot;python pm_mapper2.py&amp;quot; \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/pm_reducer2.py \
+-reducer &amp;quot;python pm_reducer2.py&amp;quot; \
+-input /test/output/DFG0/part-00000 \
+-output /test/output/DFG0-final
+&lt;/code&gt;&lt;/pre&gt;&lt;h5 id=&#34;433-copy-output-from-hdfs-to-local&#34;&gt;4.3.3. Copy output from HDFS to Local&lt;/h5&gt;
+&lt;pre&gt;&lt;code&gt;#For Windows users
+!hadoop fs -copyToLocal /test/output/DFG0-final/part-00000 C:\hadoop-handson\dfr1.txt
+
+#For Mac/Linux users
+!hadoop fs -copyToLocal /test/output/DFG0-final/part-00000 ./dfr1.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;44-process-discovery&#34;&gt;4.4 Process Discovery&lt;/h4&gt;
+&lt;p&gt;For applying process mining techniques, we use &lt;a href=&#34;https://pm4py.fit.fraunhofer.de/&#34;&gt;PM4PY&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 1. Import libraries&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; os
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; csv
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; pm4py.objects.log.importer.xes &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; factory &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; xes_importer
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; pm4py.objects.conversion.dfg &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; factory &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; dfg_mining_factory
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; pm4py.algo.discovery.dfg &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; factory &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; dfg_factory
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; pm4py.visualization.dfg &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; factory &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; dfg_vis_factory
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; pm4py.visualization.petrinet &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; factory &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; pn_vis_factory
+
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 2. preprocessing&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; open(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;dfr1.txt&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; file:
+    file_reader &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; csv&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;reader(file, delimiter&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\t&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;)
+    dfg &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dict()
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; row &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; file_reader:
+        _from,_to&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;row[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;,&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;)
+        rel &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (_from,_to)
+        freq &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; int(row[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;])
+        dfg[rel] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; freq
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 3. Visualize Directly-follows-graph (DFG)&lt;/span&gt;
+gviz &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dfg_vis_factory&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;apply(dfg)
+dfg_vis_factory&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;view(gviz)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 4. Discover and Visualize Workflow-Net&lt;/span&gt;
+net, im, fm &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dfg_mining_factory&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;apply(dfg)
+gviz &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pn_vis_factory&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;apply(net, im, fm)
+pn_vis_factory&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;view(gviz)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
     
     <item>
       <title>The (easiest) Hadoop installation - MacOS/Linux</title>

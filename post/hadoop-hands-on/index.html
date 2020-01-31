@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.3.1">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Gyunam Park">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Hadoop Hands-On (Process Mining with Hadoop) (Last updated: 31. January. 2020)
+This blog post is a supplement for Hadoop instruction at Introduction to Data Science, RWTH-Aachen. This post covers:
+ What is Hadoop Distributed File System (HDFS)? How can we use it? What is Hadoop MapReduce? How can we use it? How can we apply process mining techniques to an event log with billions of events with Hadoop?  We are living in the world of big data.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://gyunamister.github.io/post/hadoop-hands-on/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.2f3ad830d0a64bf8a36a9a54cc63fcc3.css">
+
+  
+
+  
+  
+  
+
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="https://gyunamister.github.io/post/hadoop-hands-on/">
+
+  
+  
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="twitter:site" content="@gyunamister">
+  <meta property="twitter:creator" content="@gyunamister">
+  
+  <meta property="og:site_name" content="Gyunam">
+  <meta property="og:url" content="https://gyunamister.github.io/post/hadoop-hands-on/">
+  <meta property="og:title" content="Hadoop Hands-On (Process Mining with Hadoop) | Gyunam">
+  <meta property="og:description" content="Hadoop Hands-On (Process Mining with Hadoop) (Last updated: 31. January. 2020)
+This blog post is a supplement for Hadoop instruction at Introduction to Data Science, RWTH-Aachen. This post covers:
+ What is Hadoop Distributed File System (HDFS)? How can we use it? What is Hadoop MapReduce? How can we use it? How can we apply process mining techniques to an event log with billions of events with Hadoop?  We are living in the world of big data."><meta property="og:image" content="https://gyunamister.github.io/img/icon-192.png">
+  <meta property="twitter:image" content="https://gyunamister.github.io/img/icon-192.png"><meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2020-01-31T07:55:14&#43;01:00">
+  
+  <meta property="article:modified_time" content="2020-01-31T07:55:14&#43;01:00">
+  
+
+  
+
+
+  
+
+
+
+
+
+  <title>Hadoop Hands-On (Process Mining with Hadoop) | Gyunam</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" role="textbox" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/">Gyunam</a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav mr-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>Home</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/post/" target="_blank" rel="noopener"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/publication/" target="_blank" rel="noopener"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#experience"><span>History</span></a>
+        </li>
+
+        
+        
+
+      
+      </ul>
+      <ul class="navbar-nav ml-auto">
+      
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1 itemprop="name">Hadoop Hands-On (Process Mining with Hadoop)</h1>
+
+  
+
+  
+    
+
+
+
+<meta content="2020-01-31 07:55:14 &#43;0100 CET" itemprop="datePublished">
+<meta content="2020-01-31 07:55:14 &#43;0100 CET" itemprop="dateModified">
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+
+
+  <span itemprop="author name" itemtype="http://schema.org/Person"><a href="/authors/gyunam-park/">Gyunam Park</a></span>
+
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    <time>Jan 31, 2020</time>
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    11 min read
+  </span>
+  
+
+  
+  
+
+  
+  
+
+  
+    
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://gyunamister.github.io/post/hadoop-hands-on/&amp;text=Hadoop%20Hands-On%20%28Process%20Mining%20with%20Hadoop%29" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://gyunamister.github.io/post/hadoop-hands-on/&amp;t=Hadoop%20Hands-On%20%28Process%20Mining%20with%20Hadoop%29" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Hadoop%20Hands-On%20%28Process%20Mining%20with%20Hadoop%29&amp;body=https://gyunamister.github.io/post/hadoop-hands-on/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://gyunamister.github.io/post/hadoop-hands-on/&amp;title=Hadoop%20Hands-On%20%28Process%20Mining%20with%20Hadoop%29" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Hadoop%20Hands-On%20%28Process%20Mining%20with%20Hadoop%29%20https://gyunamister.github.io/post/hadoop-hands-on/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://gyunamister.github.io/post/hadoop-hands-on/&amp;title=Hadoop%20Hands-On%20%28Process%20Mining%20with%20Hadoop%29" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      <h1 id="hadoop-hands-on-process-mining-with-hadoop">Hadoop Hands-On (Process Mining with Hadoop)</h1>
+<p><em>(Last updated: 31. January. 2020)</em></p>
+<p>This blog post is a supplement for Hadoop instruction at <em>Introduction to Data Science, RWTH-Aachen</em>. This post covers:</p>
+<ul>
+<li><strong>What is Hadoop Distributed File System (HDFS)? How can we use it?</strong></li>
+<li><strong>What is Hadoop MapReduce? How can we use it?</strong></li>
+<li><strong>How can we apply process mining techniques to an event log with billions of events with Hadoop?</strong></li>
+</ul>
+<p>We are living in the world of <strong>big data</strong>. Data is being generated at all the places we can imagine. If you look outside the window, people waiting for the bus generate huge amount of logs while surfing websites and watching Youtube clips. The houses also produce lots of data from sensors attached to electrical machines, even including bulbs. This enables companies to develop services (e.g., personalized recommendation) which benifits their customers (like us) a lot.</p>
+<p>If you think of how the companies give those advantages to us, it is not coming for free. Companies are struggling to manage the data as efficient as possible. Building big data infrastructure is one of those efforts. How do they exploit big data infrastructure to manage the big data efficiently? There are three most important trends in constructing big data infrastructure</p>
+<ul>
+<li><em>Distribution</em></li>
+<li><em>More data in memory</em></li>
+<li><em>Streaming</em></li>
+</ul>
+<p>In this post, I am going to deal with <em><strong>distribution</strong></em> part.</p>
+<p>If we have a super computer which is capable of handling big data with fast computation and reliable fault tolerance, we don't really have to worry much about distributing the storage and computation into different machines. However, most of the time, it is not the case. Then, what can we do? The answer is distribution.</p>
+<p>The motivation is that we store the massive volume of data into multiple cheap commodities and parallelize computation across CPUs of the commodities. With this simple idea, we are able to store and analyze big data. Then, how can we achieve it? The answer is Hadoop.</p>
+<p><em>(<a href="https://en.wikipedia.org/wiki/Apache_Hadoop">Wikipedia</a>) Hadoop is a collection of open-source software utilities that facilitate using a network of many computers to solve problems involving massive amounts of data and computation. It provides a software framework for distributed storage and processing of big data using the MapReduce programming model.</em></p>
+<p>The first phase of hadoop was composed of Hadoop Distributed File System (HDFS), which is used for storing data, and MapReduce programming model, which is used for distributing computation. The second phase of hadoop was more elaborated by separating the resource management functionality of previous MapReduce into Yarn and introducing more specialized applications like Hive, which is used for making queries. In the third phase, it becomes much more elaborated, and there are hundreds of applications available in the context of Hadoop framework, which are used for machine learning, streaming data analysis, cloud environment, etc.</p>
+
+
+
+
+
+
+<figure>
+
+  <a data-fancybox="" href="hadoop-history.png" >
+
+<img src="hadoop-history.png" >
+</a>
+
+
+<figcaption data-pre="Figure " data-post=":" >
+  <h4>Hadoop History</h4>
+  
+</figcaption>
+
+</figure>
+
+<p>The best way to understand how Hadoop works is to learn about <strong>HDFS and MapReduce</strong>, which are basic building blocks for various other applications.</p>
+<h3 id="1-hdfs">1. HDFS</h3>
+<p>If you upload a file into DFS, it is split into data blocks, and each of them is stored into different nodes. For the purpose of fault tolerance, you can make copies of those blocks and store them into different nodes. Let's say you have two files, <em>file1.txt and file2.txt</em>. They are divided into three and two blocks, respectively. Each block is copied three times, and stored into data nodes. For example, <em>file1.txt</em> is splited into three blocks, and the three copies of block <em>A</em> are stored at data node #1, #2, and #4. It gurantees fault tolerance, i.e., even though data node #1 fails, there are data node #2 and #4, which are still running.</p>
+
+
+
+
+
+
+<figure>
+
+  <a data-fancybox="" href="hdfs-example.png" >
+
+<img src="hdfs-example.png" >
+</a>
+
+
+<figcaption data-pre="Figure " data-post=":" >
+  <h4>HDFS example</h4>
+  
+</figcaption>
+
+</figure>
+
+<p>So, how can we upload data into HDFS? Let's have a look at some basic commands for HDFS.</p>
+<h4 id="11-preparation">1.1. Preparation</h4>
+<p>For windows, open your CMD (or Anaconda prompt) with administrator role, and type below:</p>
+<pre><code>$ hadoop dfsadmin -safemode leave
+$ start-all
+</code></pre><p>For Mac/Linux,</p>
+<pre><code>$ start-all.sh
+</code></pre><h4 id="12-commands"><strong>1.2. Commands</strong></h4>
+<ol>
+<li>
+<p>Cat: Displaying the contents of the filename on console or stdout</p>
+<pre><code>$ hadoop fs -cat /file1
+</code></pre></li>
+<li>
+<p>CopyFromLocal/CopyToLocal: uploading/downloding file from/to local</p>
+<pre><code>$ hadoop fs –copyFromLocal file:///file1  /folder1
+$ hadoop fs –copyFromLocal file:///folder1  /folder2
+$ hadoop fs –copyFromLocal file:///file1  /folder1/file2
+</code></pre></li>
+<li>
+<p>cp: relocating files in HDFS</p>
+<pre><code>$ hadoop fs –cp /file1  /folder1
+$ hadoop fs –cp /file1  /file2  /folder1
+$ hadoop fs –cp /folder1  /folder2
+</code></pre></li>
+<li>
+<p>ls: listing the files in the current directory</p>
+<pre><code>$ hadoop fs –ls /folder1
+$ hadoop fs –ls /file1
+</code></pre></li>
+<li>
+<p>mkdir: making directory</p>
+<pre><code>$ hadoop fs –mkdir /folder1
+$ hadoop fs –mkdir –p /folder1/folder2/folder3
+</code></pre></li>
+<li>
+<p>rm: removing file</p>
+<pre><code>$ hadoop fs –rm -r /folder1
+$ hadoop fs –rm /file1
+$ hadoop fs –rm  –r /folder1
+</code></pre></li>
+</ol>
+<h4 id="13-excercises"><strong>1.3. Excercises</strong></h4>
+<ul>
+<li>Build the folders /test/input in your HDFS</li>
+<li>Build the folders /test/output in your HDFS</li>
+<li>Copy the local file PriceSum1.txt into folder /test/input</li>
+<li>Show the contents of PriceSum1.txt in your terminal</li>
+<li>Delete the file /test/input/PriceSum1.txt</li>
+</ul>
+<h3 id="2-mapreduce">2. MapReduce</h3>
+<p>We uploaded our files into HDFS, and they are splited into some blocks, copied, and stored into data nodes.  So, what's next? It is time to do some actual computations using MapReduce Programming model. Let's do word counting with Hadoop.</p>
+<h4 id="21-concept">2.1. Concept</h4>
+<p>Suppose we have a file, <em>WordCount1.txt</em>, which contains the following sentences:</p>
+<ul>
+<li>the quick brown fox</li>
+<li>the fox ate the mouse</li>
+<li>how now brown cow</li>
+</ul>
+<p>Assume that this file is split into three blocks, each of which contains one sentence. How can we count the frequency of words in this file? Now, it's time for MapReduce (MR).</p>
+<p>MR consists of three functions, <em>map</em>, <em>suffle</em>, and <em>reduce</em>. Map function $map \in K_1 \times V_1 \to (K_2 \times V_2)^*$ maps tuples into sets of tuples.</p>
+
+
+
+
+
+
+<figure>
+
+  <a data-fancybox="" href="map-example.png" >
+
+<img src="map-example.png" >
+</a>
+
+
+<figcaption data-pre="Figure " data-post=":" >
+  <h4>Map example</h4>
+  
+</figcaption>
+
+</figure>
+
+<p>For example, the block 1 (i.e., sentence 1), $(block_1, the ; quick ; brown ; fox)$ is mapped into ${ (the,1),(brown,1),(fox,1),(quick,1) }$. The block 2 (i.e., sentence 2), $(block_2,the ; fox ; the ; ate ; mouse)$, is mapped into ${ (the,1),(fox,1),(the,1),(ate,1),(mouse,1) }$.</p>
+<p>Suffle function $suffle \in (K_2 \times V_2)^* \to K_2 \times (V_2)^*$ maps sets of tuples into tuples of a key and a set.</p>
+
+
+
+
+
+
+<figure>
+
+  <a data-fancybox="" href="shuffle-example.png" >
+
+<img src="shuffle-example.png" >
+</a>
+
+
+<figcaption data-pre="Figure " data-post=":" >
+  <h4>Shuffle example</h4>
+  
+</figcaption>
+
+</figure>
+
+<p>For example, $(brown,1)$ from block 1 and $(brown,1) $ from block 2 are mapped into $(brown,[1,1])$.</p>
+<p>Reduce function $reduce \in K_2 \times (V_2)^* \to (K_3 \times V_3)^*$ maps tuples of a key and a set to sets of tuples.</p>
+
+
+
+
+
+
+<figure>
+
+  <a data-fancybox="" href="reduce-example.png" >
+
+<img src="reduce-example.png" >
+</a>
+
+
+<figcaption data-pre="Figure " data-post=":" >
+  <h4>Reduce example</h4>
+  
+</figcaption>
+
+</figure>
+
+<h4 id="22-excercise">2.2. Excercise</h4>
+<ul>
+<li>
+<p>For the input document, calculate the total price for each invoice ID. Presume you use MapReduce to do this, please write down the output of each Map function, the output after shuffle, and the output of Reduce function.</p>
+
+
+
+
+
+
+<figure>
+
+  <a data-fancybox="" href="pricesum-input.png" >
+
+<img src="pricesum-input.png" >
+</a>
+
+
+<figcaption data-pre="Figure " data-post=":" >
+  <h4>Input for Price Sum</h4>
+  
+</figcaption>
+
+</figure>
+
+</li>
+</ul>
+<h3 id="3-mapreduce-programming-with-python">3. MapReduce Programming with Python</h3>
+<p>So far, we have learned what MapReduce is and how it works. Now, let our Hadoop framework do what we did by hand. Let's first recap what's done by hand. Given an input, we applied map function, shuffle function, and reduce function. Then, what do we need to do for Hadoop to do it instead of us?</p>
+<ol>
+<li>
+<p>First, upload file into HDFS (Give input)</p>
+</li>
+<li>
+<p>Write Map function (in Python)</p>
+<p><em>(Shuffling is done by Hadoop)</em></p>
+</li>
+<li>
+<p>Write Reduce function (in Python)</p>
+</li>
+<li>
+<p>Write Command</p>
+</li>
+</ol>
+<h4 id="31-uploading-file-into-hdfs">3.1. Uploading file into HDFS.</h4>
+<p>Also, see 1.2.</p>
+<pre><code>$ hadoop fs -copyFromLocal ./WordCount1.txt /test/input
+</code></pre><h4 id="32-write-map-function">3.2. Write Map function</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+
+<span style="color:#f92672">import</span> sys
+
+<span style="color:#75715e"># input comes from STDIN</span>
+<span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> sys<span style="color:#f92672">.</span>stdin:
+    <span style="color:#75715e"># remove whitespace</span>
+    sentence <span style="color:#f92672">=</span> sentence<span style="color:#f92672">.</span>strip()
+    <span style="color:#75715e"># split the sentence into words</span>
+    words <span style="color:#f92672">=</span> sentence<span style="color:#f92672">.</span>split()
+    <span style="color:#75715e"># increase counters</span>
+    <span style="color:#66d9ef">for</span> word <span style="color:#f92672">in</span> words:
+        <span style="color:#75715e"># write the results to STDOUT;</span>
+        <span style="color:#75715e"># key: word, value: 1 (count of the word)</span>
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (word, <span style="color:#ae81ff">1</span>))
+</code></pre></div><h4 id="33-write-reduce-function">3.3. Write Reduce function</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+
+<span style="color:#f92672">from</span> operator <span style="color:#f92672">import</span> itemgetter
+<span style="color:#f92672">import</span> sys
+
+current_word <span style="color:#f92672">=</span> None
+current_count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+word <span style="color:#f92672">=</span> None
+
+<span style="color:#75715e"># input comes from STDIN</span>
+<span style="color:#66d9ef">for</span> kv_pair <span style="color:#f92672">in</span> sys<span style="color:#f92672">.</span>stdin:
+    <span style="color:#75715e"># remove whitespace</span>
+    kv_pair <span style="color:#f92672">=</span> kv_pair<span style="color:#f92672">.</span>strip()
+    <span style="color:#75715e"># parse the input (word,count) we got from mapper.py</span>
+    word, count <span style="color:#f92672">=</span> kv_pair<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>, <span style="color:#ae81ff">1</span>)
+    <span style="color:#75715e"># convert count (currently a string) to int</span>
+    count <span style="color:#f92672">=</span> int(count)
+    <span style="color:#75715e"># shuflling is done by Hadoop</span>
+    <span style="color:#66d9ef">if</span> current_word<span style="color:#f92672">!=</span>word:
+        <span style="color:#66d9ef">if</span> current_word:
+            <span style="color:#75715e"># write result to STDOUT</span>
+            <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (current_word, current_count))
+        current_word <span style="color:#f92672">=</span> word
+        current_count <span style="color:#f92672">=</span> count
+    <span style="color:#66d9ef">else</span>:
+        current_count <span style="color:#f92672">+</span><span style="color:#f92672">=</span> count
+
+<span style="color:#75715e"># output the last word</span>
+<span style="color:#66d9ef">if</span> current_word <span style="color:#f92672">==</span> word:
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (current_word, current_count))
+</code></pre></div><h4 id="34-command">3.4. Command</h4>
+<p>For Windows:</p>
+<pre><code>$ hadoop jar C:\hadoop-2.8.4\share\hadoop\tools\lib\hadoop-streaming-2.8.4.jar -input hdfs:///test/input/WordCount1.txt -output hdfs:///test/output/WordCountOutput0 -mapper &quot;python C:\Users\park\Desktop\bigdata\new_instruction\word_mapper.py&quot; -reducer &quot;python C:\Users\park\Desktop\bigdata\new_instruction\word_reducer.py&quot; -file C:\Users\park\Desktop\bigdata\new_instruction\word_mapper.py -file C:\Users\park\Desktop\bigdata\new_instruction\word_reducer.py
+</code></pre><p>For Mac&amp;Linux:</p>
+<pre><code>hadoop jar /usr/local/Cellar/hadoop-2.8.4/share/hadoop/tools/lib/hadoop-streaming-2.8.4.jar \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/word_mapper.py \
+-mapper &quot;python word_mapper.py&quot; \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/word_reducer.py \
+-reducer &quot;python word_reducer.py&quot; \
+-input /test/input/WordCount1.txt \
+-output /test/output/WordCountOutput
+</code></pre><h4 id="35-excercise">3.5. Excercise</h4>
+<p>Write down the Python code of mapper and reducer to solve the problem from exercise 1: calculate the total price for each invoice id for a given document with the same format as shown in exercise 1. Run your code over the file PriceSum1.txt stored in HDFS</p>
+<h3 id="4-process-mining-with-hadoop">4. Process Mining with Hadoop</h3>
+<p>Let's say we have an event log with billions of events. How can we discover process model from this event log?</p>
+<p>The answer is to use Hadoop framework. We can distribute the event log into multiple data nodes, and apply MapReduce programming model to compute directly follows relations (i.e., how many times activity x is followed by activity y). For this, we need to apply two MapReduce tasks. The first task is to generate traces from the event log by using MapReduce. The second is to discover directly follows relations (DFR) from the traces. Afterward, this direclty follows relations to discover a directly follows graph (DFG) and a workflow net.</p>
+<p>Below is the overview of our approach</p>
+
+
+
+
+
+
+<figure>
+
+  <a data-fancybox="" href="pm-overview.png" >
+
+<img src="pm-overview.png" >
+</a>
+
+
+<figcaption data-pre="Figure " data-post=":" >
+  <h4>Overview</h4>
+  
+</figcaption>
+
+</figure>
+
+<h4 id="41-mapreduce-task-1">4.1. MapReduce Task (1)</h4>
+<p>Below is the description of how it works:</p>
+
+
+
+
+
+
+<figure>
+
+  <a data-fancybox="" href="pm-task1.png" >
+
+<img src="pm-task1.png" >
+</a>
+
+
+<figcaption data-pre="Figure " data-post=":" >
+  <h4>Overview</h4>
+  
+</figcaption>
+
+</figure>
+
+<h5 id="411-map-function">4.1.1 Map function</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+
+<span style="color:#f92672">import</span> sys
+
+<span style="color:#75715e"># input comes from STDIN (standard input)</span>
+<span style="color:#66d9ef">for</span> line <span style="color:#f92672">in</span> sys<span style="color:#f92672">.</span>stdin:
+	<span style="color:#75715e"># remove whitespace and split row into values</span>
+    line_split <span style="color:#f92672">=</span> line<span style="color:#f92672">.</span>strip()<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#34;</span>)
+    <span style="color:#75715e"># assign case, activity, timestamp</span>
+    case <span style="color:#f92672">=</span> line_split[<span style="color:#ae81ff">0</span>]
+    activity <span style="color:#f92672">=</span> line_split[<span style="color:#ae81ff">1</span>]
+    timestamp <span style="color:#f92672">=</span> line_split[<span style="color:#ae81ff">3</span>]
+    <span style="color:#75715e"># write the results to STDOUT;</span>
+    <span style="color:#75715e"># key: case, value: (timestamp,activity)</span>
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (case, timestamp, activity))
+</code></pre></div><h5 id="412-reduce-function">4.1.2 Reduce function</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+<span style="color:#f92672">import</span> sys
+<span style="color:#f92672">import</span> json
+
+current_case <span style="color:#f92672">=</span> None
+
+<span style="color:#75715e"># input comes from STDIN</span>
+<span style="color:#66d9ef">for</span> line <span style="color:#f92672">in</span> sys<span style="color:#f92672">.</span>stdin:
+	<span style="color:#75715e"># remove whitespace and parse the input (case,(timestamp, activity)) we got from mapper.py</span>
+	line_split <span style="color:#f92672">=</span> line<span style="color:#f92672">.</span>strip()<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#34;</span>)
+	caseid, timestamp, activity <span style="color:#f92672">=</span> line_split[<span style="color:#ae81ff">0</span>], line_split[<span style="color:#ae81ff">1</span>], line_split[<span style="color:#ae81ff">2</span>]
+	<span style="color:#75715e"># shuflling is done by Hadoop</span>
+	<span style="color:#66d9ef">if</span> caseid <span style="color:#f92672">!=</span> current_case:
+		<span style="color:#75715e"># write result to STDOUT</span>
+		<span style="color:#66d9ef">if</span> current_case:
+			<span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (current_case,json<span style="color:#f92672">.</span>dumps(current_trace)))
+		<span style="color:#75715e"># reset current trace</span>
+		current_case <span style="color:#f92672">=</span> caseid
+		current_trace <span style="color:#f92672">=</span> list()
+		current_trace <span style="color:#f92672">+</span><span style="color:#f92672">=</span> [activity]
+	<span style="color:#66d9ef">else</span>:
+		current_trace <span style="color:#f92672">+</span><span style="color:#f92672">=</span> [activity]
+
+<span style="color:#75715e"># output the last word</span>
+<span style="color:#66d9ef">if</span> current_case <span style="color:#f92672">==</span> caseid:
+	<span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (caseid,json<span style="color:#f92672">.</span>dumps(current_trace)))
+</code></pre></div><h4 id="42-mapreduce-task-2">4.2. MapReduce Task (2)</h4>
+<p>Below is the description of how it works:</p>
+
+
+
+
+
+
+<figure>
+
+  <a data-fancybox="" href="pm-task2.png" >
+
+<img src="pm-task2.png" >
+</a>
+
+
+<figcaption data-pre="Figure " data-post=":" >
+  <h4>Overview</h4>
+  
+</figcaption>
+
+</figure>
+
+<h5 id="421-map-function">4.2.1. Map function</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+
+<span style="color:#f92672">import</span> sys
+<span style="color:#f92672">import</span> json
+
+<span style="color:#75715e"># input comes from STDIN</span>
+<span style="color:#66d9ef">for</span> line <span style="color:#f92672">in</span> sys<span style="color:#f92672">.</span>stdin:
+	<span style="color:#75715e"># remove whitespace and split row into values</span>
+	line_split <span style="color:#f92672">=</span> line<span style="color:#f92672">.</span>strip()<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#34;</span>)
+	<span style="color:#75715e"># load trace into list of activities</span>
+	activities <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(line_split[<span style="color:#ae81ff">1</span>])
+	<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(activities)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+		<span style="color:#75715e"># write the results to STDOUT;</span>
+    	<span style="color:#75715e"># key: (from,to), value: 1 (count of the relation)</span>
+		stru <span style="color:#f92672">=</span> activities[i] <span style="color:#f92672">+</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">,</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span> activities[i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>]
+		<span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (stru, <span style="color:#ae81ff">1</span>))
+</code></pre></div><h5 id="422-reduce-function">4.2.2. Reduce function</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;&#34;&#34;</span><span style="color:#e6db74">reducer.py</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+
+<span style="color:#f92672">from</span> operator <span style="color:#f92672">import</span> itemgetter
+<span style="color:#f92672">import</span> sys
+
+current_relation <span style="color:#f92672">=</span> None
+current_count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+relation <span style="color:#f92672">=</span> None
+
+<span style="color:#75715e"># input comes from STDIN</span>
+<span style="color:#66d9ef">for</span> line <span style="color:#f92672">in</span> sys<span style="color:#f92672">.</span>stdin:
+    <span style="color:#75715e"># remove whitespace</span>
+    line <span style="color:#f92672">=</span> line<span style="color:#f92672">.</span>strip()
+    <span style="color:#75715e"># parse the input ((from,to),count) we got from mapper.py</span>
+    relation, count <span style="color:#f92672">=</span> line<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>, <span style="color:#ae81ff">1</span>)
+    <span style="color:#75715e"># convert count (currently a string) to int</span>
+    count <span style="color:#f92672">=</span> int(count)
+    <span style="color:#75715e"># shuflling is done by Hadoop</span>
+    <span style="color:#66d9ef">if</span> current_relation<span style="color:#f92672">!=</span>relation:
+        <span style="color:#66d9ef">if</span> current_relation:
+            <span style="color:#75715e"># write result to STDOUT</span>
+            <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (current_relation, current_count))
+        current_relation <span style="color:#f92672">=</span> relation
+        current_count <span style="color:#f92672">=</span> count
+    <span style="color:#66d9ef">else</span>:
+        current_count <span style="color:#f92672">+</span><span style="color:#f92672">=</span> count
+
+<span style="color:#75715e"># output the last relation</span>
+<span style="color:#66d9ef">if</span> current_relation <span style="color:#f92672">==</span> relation:
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (current_relation, current_count))
+</code></pre></div><h4 id="43-command">4.3. Command</h4>
+<h5 id="431-mapreduce-task-1">4.3.1. MapReduce Task (1)</h5>
+<pre><code>#For Windows users
+!hadoop jar C:\hadoop-2.8.4\share\hadoop\tools\lib\hadoop-streaming-2.8.4.jar -file C:\hadoop-handson\pm_mapper1.py -mapper &quot;python C:\hadoop-handson\pm_mapper1.py&quot; -file C:\hadoop-handson\pm_reducer1.py -reducer &quot;python C:\hadoop-handson\pm_reducer1.py&quot; -input hdfs:///test/input/running-example.tsv -output hdfs:///test/output/DFG0
+
+#For Mac/Linux users
+!hadoop jar /usr/local/Cellar/hadoop-2.8.4/share/hadoop/tools/lib/hadoop-streaming-2.8.4.jar \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/pm_mapper1.py \
+-mapper &quot;python pm_mapper1.py&quot; \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/pm_reducer1.py \
+-reducer &quot;python pm_reducer1.py&quot; \
+-input /test/input/running-example.tsv \
+-output /test/output/DFG0
+</code></pre><h5 id="432-mapreduce-task-2">4.3.2. MapReduce Task (2)</h5>
+<pre><code>#For Windows users
+!hadoop jar C:\hadoop-2.8.4\share\hadoop\tools\lib\hadoop-streaming-2.8.4.jar -file C:\hadoop-handson\pm_mapper2.py -mapper &quot;python C:\hadoop-handson\pm_mapper2.py&quot; -file C:\hadoop-handson\pm_reducer2.py -reducer &quot;python C:\hadoop-handson\pm_reducer2.py&quot; -input hdfs:///test/output/DFG0/part-00000 -output hdfs:///test/output/DFG0-final
+
+#For Mac/Linux users
+!hadoop jar /usr/local/Cellar/hadoop-2.8.4/share/hadoop/tools/lib/hadoop-streaming-2.8.4.jar \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/pm_mapper2.py \
+-mapper &quot;python pm_mapper2.py&quot; \
+-file /Users/GYUNAM/Desktop/bigdata/instruction/pm_reducer2.py \
+-reducer &quot;python pm_reducer2.py&quot; \
+-input /test/output/DFG0/part-00000 \
+-output /test/output/DFG0-final
+</code></pre><h5 id="433-copy-output-from-hdfs-to-local">4.3.3. Copy output from HDFS to Local</h5>
+<pre><code>#For Windows users
+!hadoop fs -copyToLocal /test/output/DFG0-final/part-00000 C:\hadoop-handson\dfr1.txt
+
+#For Mac/Linux users
+!hadoop fs -copyToLocal /test/output/DFG0-final/part-00000 ./dfr1.txt
+</code></pre><h4 id="44-process-discovery">4.4 Process Discovery</h4>
+<p>For applying process mining techniques, we use <a href="https://pm4py.fit.fraunhofer.de/">PM4PY</a>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 1. Import libraries</span>
+<span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> csv
+<span style="color:#f92672">from</span> pm4py.objects.log.importer.xes <span style="color:#f92672">import</span> factory <span style="color:#66d9ef">as</span> xes_importer
+<span style="color:#f92672">from</span> pm4py.objects.conversion.dfg <span style="color:#f92672">import</span> factory <span style="color:#66d9ef">as</span> dfg_mining_factory
+<span style="color:#f92672">from</span> pm4py.algo.discovery.dfg <span style="color:#f92672">import</span> factory <span style="color:#66d9ef">as</span> dfg_factory
+<span style="color:#f92672">from</span> pm4py.visualization.dfg <span style="color:#f92672">import</span> factory <span style="color:#66d9ef">as</span> dfg_vis_factory
+<span style="color:#f92672">from</span> pm4py.visualization.petrinet <span style="color:#f92672">import</span> factory <span style="color:#66d9ef">as</span> pn_vis_factory
+
+
+<span style="color:#75715e"># 2. preprocessing</span>
+<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">dfr1.txt</span><span style="color:#e6db74">&#39;</span>) <span style="color:#66d9ef">as</span> file:
+    file_reader <span style="color:#f92672">=</span> csv<span style="color:#f92672">.</span>reader(file, delimiter<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">&#39;</span>)
+    dfg <span style="color:#f92672">=</span> dict()
+    <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> file_reader:
+        _from,_to<span style="color:#f92672">=</span>row[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">,</span><span style="color:#e6db74">&#39;</span>)
+        rel <span style="color:#f92672">=</span> (_from,_to)
+        freq <span style="color:#f92672">=</span> int(row[<span style="color:#ae81ff">1</span>])
+        dfg[rel] <span style="color:#f92672">=</span> freq
+
+<span style="color:#75715e"># 3. Visualize Directly-follows-graph (DFG)</span>
+gviz <span style="color:#f92672">=</span> dfg_vis_factory<span style="color:#f92672">.</span>apply(dfg)
+dfg_vis_factory<span style="color:#f92672">.</span>view(gviz)
+
+<span style="color:#75715e"># 4. Discover and Visualize Workflow-Net</span>
+net, im, fm <span style="color:#f92672">=</span> dfg_mining_factory<span style="color:#f92672">.</span>apply(dfg)
+gviz <span style="color:#f92672">=</span> pn_vis_factory<span style="color:#f92672">.</span>apply(net, im, fm)
+pn_vis_factory<span style="color:#f92672">.</span>view(gviz)
+</code></pre></div>
+    </div>
+
+    
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  
+
+
+
+
+
+  
+  
+  
+  
+  <div class="media author-card" itemscope itemtype="http://schema.org/Person">
+    
+
+    <div class="media-body">
+      <h5 class="card-title" itemprop="name"><a href="/authors/gyunam-park/"></a></h5>
+      
+      
+      <ul class="network-icon" aria-hidden="true">
+        
+      </ul>
+    </div>
+  </div>
+
+
+
+      
+      
+    
+
+    
+
+    
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+    
+    <script src="/js/mathjax-config.js"></script>
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+      
+
+      
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML-full" integrity="sha256-GhM+5JHb6QUzOQPXSJLEWP7R73CbkisjzK5Eyij4U9w=" crossorigin="anonymous" async></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/index.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'results': "results found",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.d916869fdf6953df2272ba2769375b53.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

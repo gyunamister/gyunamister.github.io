@@ -49,16 +49,26 @@
   
   <url>
     <loc>https://gyunamister.github.io/authors/</loc>
-    <lastmod>2020-01-23T20:03:27+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://gyunamister.github.io/tags/bigdata/</loc>
-    <lastmod>2020-01-23T20:03:27+01:00</lastmod>
+    <lastmod>2020-01-31T07:55:14+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://gyunamister.github.io/authors/gyunam-park/</loc>
+    <lastmod>2020-01-31T07:55:14+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/post/hadoop-hands-on/</loc>
+    <lastmod>2020-01-31T07:55:14+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/post/</loc>
+    <lastmod>2020-01-31T07:55:14+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gyunamister.github.io/tags/bigdata/</loc>
     <lastmod>2020-01-23T20:03:27+01:00</lastmod>
   </url>
   
@@ -69,11 +79,6 @@
   
   <url>
     <loc>https://gyunamister.github.io/tags/installation/</loc>
-    <lastmod>2020-01-23T20:03:27+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://gyunamister.github.io/post/</loc>
     <lastmod>2020-01-23T20:03:27+01:00</lastmod>
   </url>
   

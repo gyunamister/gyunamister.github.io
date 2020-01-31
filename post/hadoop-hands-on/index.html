@@ -28,7 +28,7 @@
   
     
   
-  <meta name="description" content="Hadoop Hands-On (Process Mining with Hadoop) (Last updated: 31. January. 2020)
+  <meta name="description" content="Hadoop Hands-on (Last updated: 31. January. 2020)
 This blog post is a supplement for Hadoop instruction at Introduction to Data Science, RWTH-Aachen. This post covers:
  What is Hadoop Distributed File System (HDFS)? How can we use it? What is Hadoop MapReduce? How can we use it? How can we apply process mining techniques to an event log with billions of events with Hadoop?  We are living in the world of big data.">
 
@@ -115,7 +115,7 @@ This blog post is a supplement for Hadoop instruction at Introduction to Data Sc
   <meta property="og:site_name" content="Gyunam">
   <meta property="og:url" content="https://gyunamister.github.io/post/hadoop-hands-on/">
   <meta property="og:title" content="Hadoop Hands-On (Process Mining with Hadoop) | Gyunam">
-  <meta property="og:description" content="Hadoop Hands-On (Process Mining with Hadoop) (Last updated: 31. January. 2020)
+  <meta property="og:description" content="Hadoop Hands-on (Last updated: 31. January. 2020)
 This blog post is a supplement for Hadoop instruction at Introduction to Data Science, RWTH-Aachen. This post covers:
  What is Hadoop Distributed File System (HDFS)? How can we use it? What is Hadoop MapReduce? How can we use it? How can we apply process mining techniques to an event log with billions of events with Hadoop?  We are living in the world of big data."><meta property="og:image" content="https://gyunamister.github.io/img/icon-192.png">
   <meta property="twitter:image" content="https://gyunamister.github.io/img/icon-192.png"><meta property="og:locale" content="en-us">
@@ -422,7 +422,7 @@ This blog post is a supplement for Hadoop instruction at Introduction to Data Sc
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    11 min read
+    10 min read
   </span>
   
 
@@ -546,7 +546,7 @@ This blog post is a supplement for Hadoop instruction at Introduction to Data Sc
   <div class="article-container">
 
     <div class="article-style" itemprop="articleBody">
-      <h1 id="hadoop-hands-on-process-mining-with-hadoop">Hadoop Hands-On (Process Mining with Hadoop)</h1>
+      <h1 id="hadoop-hands-on">Hadoop Hands-on</h1>
 <p><em>(Last updated: 31. January. 2020)</em></p>
 <p>This blog post is a supplement for Hadoop instruction at <em>Introduction to Data Science, RWTH-Aachen</em>. This post covers:</p>
 <ul>
@@ -579,12 +579,6 @@ This blog post is a supplement for Hadoop instruction at Introduction to Data Sc
 <img src="hadoop-history.png" >
 </a>
 
-
-<figcaption data-pre="Figure " data-post=":" >
-  <h4>Hadoop History</h4>
-  
-</figcaption>
-
 </figure>
 
 <p>The best way to understand how Hadoop works is to learn about <strong>HDFS and MapReduce</strong>, which are basic building blocks for various other applications.</p>
@@ -602,12 +596,6 @@ This blog post is a supplement for Hadoop instruction at Introduction to Data Sc
 
 <img src="hdfs-example.png" >
 </a>
-
-
-<figcaption data-pre="Figure " data-post=":" >
-  <h4>HDFS example</h4>
-  
-</figcaption>
 
 </figure>
 
@@ -685,12 +673,6 @@ $ hadoop fs –rm  –r /folder1
 <img src="map-example.png" >
 </a>
 
-
-<figcaption data-pre="Figure " data-post=":" >
-  <h4>Map example</h4>
-  
-</figcaption>
-
 </figure>
 
 <p>For example, the block 1 (i.e., sentence 1), $(block_1, the ; quick ; brown ; fox)$ is mapped into ${ (the,1),(brown,1),(fox,1),(quick,1) }$. The block 2 (i.e., sentence 2), $(block_2,the ; fox ; the ; ate ; mouse)$, is mapped into ${ (the,1),(fox,1),(the,1),(ate,1),(mouse,1) }$.</p>
@@ -708,12 +690,6 @@ $ hadoop fs –rm  –r /folder1
 <img src="shuffle-example.png" >
 </a>
 
-
-<figcaption data-pre="Figure " data-post=":" >
-  <h4>Shuffle example</h4>
-  
-</figcaption>
-
 </figure>
 
 <p>For example, $(brown,1)$ from block 1 and $(brown,1) $ from block 2 are mapped into $(brown,[1,1])$.</p>
@@ -730,12 +706,6 @@ $ hadoop fs –rm  –r /folder1
 
 <img src="reduce-example.png" >
 </a>
-
-
-<figcaption data-pre="Figure " data-post=":" >
-  <h4>Reduce example</h4>
-  
-</figcaption>
 
 </figure>
 
@@ -755,12 +725,6 @@ $ hadoop fs –rm  –r /folder1
 
 <img src="pricesum-input.png" >
 </a>
-
-
-<figcaption data-pre="Figure " data-post=":" >
-  <h4>Input for Price Sum</h4>
-  
-</figcaption>
 
 </figure>
 
@@ -863,12 +827,6 @@ word <span style="color:#f92672">=</span> None
 <img src="pm-overview.png" >
 </a>
 
-
-<figcaption data-pre="Figure " data-post=":" >
-  <h4>Overview</h4>
-  
-</figcaption>
-
 </figure>
 
 <h4 id="41-mapreduce-task-1">4.1. MapReduce Task (1)</h4>
@@ -885,12 +843,6 @@ word <span style="color:#f92672">=</span> None
 
 <img src="pm-task1.png" >
 </a>
-
-
-<figcaption data-pre="Figure " data-post=":" >
-  <h4>Overview</h4>
-  
-</figcaption>
 
 </figure>
 
@@ -951,12 +903,6 @@ current_case <span style="color:#f92672">=</span> None
 
 <img src="pm-task2.png" >
 </a>
-
-
-<figcaption data-pre="Figure " data-post=":" >
-  <h4>Overview</h4>
-  
-</figcaption>
 
 </figure>
 
